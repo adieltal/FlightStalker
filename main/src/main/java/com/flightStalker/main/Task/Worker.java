@@ -152,9 +152,7 @@ public class Worker {
     }
 
     private int extractAvailableSeats(JsonNode roundTripNode) {
-//        String availableSeats = roundTripNode.has("AvailableSeats") ? roundTripNode.get("AvailableSeats").textValue() : "0";
-//        return Integer.parseInt(availableSeats);
-        return 0;
+        return roundTripNode.get("AvailableSeats").asInt();
     }
 
     private String extractCountryName(JsonNode roundTripNode) {
