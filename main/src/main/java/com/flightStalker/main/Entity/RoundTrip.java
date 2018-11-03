@@ -1,14 +1,26 @@
 package com.flightStalker.main.Entity;
 
+import javax.persistence.*;
+import java.util.UUID;
+
+@Entity
 public class RoundTrip {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
     private String countryName;
     private String destinationName;
+    @OneToOne(cascade = {CascadeType.ALL})
     private Flight inboundFlight;
+    @OneToOne(cascade = {CascadeType.ALL})
     private Flight outboundFlight;
     private int price;
     private long lastCheck;
     private int availableSeats;
+
+    public RoundTrip() {
+    }
 
     public RoundTrip(Flight inboundFlight, Flight outboundFlight, int price, String countryName, String destinationName, long lastCheck, int availableSeats) {
 
@@ -20,6 +32,28 @@ public class RoundTrip {
         this.lastCheck = lastCheck;
         this.availableSeats = availableSeats;
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public RoundTrip setCountryName(String countryName) {
+        this.countryName = countryName;
+        return this;
+    }
+
+    public String getDestinationName() {
+        return destinationName;
+    }
+
+    public RoundTrip setDestinationName(String destinationName) {
+        this.destinationName = destinationName;
+        return this;
     }
 
     public Flight getInboundFlight() {

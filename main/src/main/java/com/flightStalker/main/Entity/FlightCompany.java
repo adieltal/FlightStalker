@@ -1,15 +1,31 @@
 package com.flightStalker.main.Entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class FlightCompany {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
     private String name;
     private String code;
     private String iconUrl;
+
+    public FlightCompany() {
+    }
 
     public FlightCompany(String name, String code, String iconUrl) {
         this.name = name;
         this.code = code;
         this.iconUrl = iconUrl;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

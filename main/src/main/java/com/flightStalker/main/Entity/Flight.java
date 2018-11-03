@@ -1,9 +1,15 @@
 package com.flightStalker.main.Entity;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 public class Flight {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
+    @ManyToOne(cascade = {CascadeType.ALL})
     private FlightCompany flightCompany;
     private String flightNumber;
     private String departureAirport;
@@ -11,13 +17,21 @@ public class Flight {
     private Date departure;
     private Date arrival;
 
+    public Flight() {
+    }
+
     public Flight(FlightCompany flightCompany, String flightNumber, String departureAirport, String arrivalAirport, Date departure, Date arrival) {
+
         this.flightCompany = flightCompany;
         this.flightNumber = flightNumber;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.departure = departure;
         this.arrival = arrival;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public FlightCompany getFlightCompany() {

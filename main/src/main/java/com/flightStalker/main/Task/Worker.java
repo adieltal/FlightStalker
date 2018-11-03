@@ -5,9 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flightStalker.main.Entity.Flight;
 import com.flightStalker.main.Entity.FlightCompany;
 import com.flightStalker.main.Entity.RoundTrip;
+import com.flightStalker.main.dao.RoundTripDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
@@ -19,12 +22,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class Worker {
 
-    //    private String url = "";
+    @Autowired
+    private RoundTripDAO roundTripDAO;
     private String url = "https://s3.eu-central-1.amazonaws.com/catalogs.hulyo.co.il/catalogs/Production/Flights/v1.4/above199FlightsWebOnly.js";
 
     private String readAll(Reader rd) throws IOException {
@@ -106,9 +112,10 @@ public class Worker {
                 final JsonNode flightsNode = mapper.readTree(strJSON).get("Flights");
                 if(flightsNode.isArray()){
                     //iterate over flights array
+                    long lastCheck = System.currentTimeMillis();
                     for( final JsonNode roundTripNode : flightsNode){
                         if(isRoundTripValid(roundTripNode)){
-                            RoundTrip roundTrip = parseRoundTrip(roundTripNode);
+                            RoundTrip roundTrip = parseRoundTrip(roundTripNode, lastCheck);
                             roundTrips.add(roundTrip);
                         }
                     }
@@ -124,7 +131,7 @@ public class Worker {
             e.printStackTrace();
 
         }
-
+        roundTripDAO.saveAll(roundTrips);
         return roundTrips.toString();
     }
 
@@ -134,7 +141,7 @@ public class Worker {
                 && roundTripNode.has("OutboundFlights");
     }
 
-    private RoundTrip parseRoundTrip(JsonNode roundTripNode) {
+    private RoundTrip parseRoundTrip(JsonNode roundTripNode, long lastCheck) {
         System.out.println("flight data: " + roundTripNode);
         Flight inboundFlight = parseSingleFlight(roundTripNode.get("InboundFlights").get(0)); //todo add a validation check
         Flight outboundFlight = parseSingleFlight(roundTripNode.get("OutboundFlights").get(0)); //todo add a validation check`
@@ -142,7 +149,6 @@ public class Worker {
         String countryName = extractCountryName(roundTripNode);
         String destinationName = extractDestinationName(roundTripNode);
         int availableSeats = extractAvailableSeats(roundTripNode);
-        long lastCheck = System.currentTimeMillis();
         return new RoundTrip(inboundFlight, outboundFlight, price, countryName, destinationName, lastCheck, availableSeats);
     }
 
@@ -216,5 +222,16 @@ public class Worker {
 
     private String extractFlightNumber(JsonNode flightNode) {
         return flightNode.get("FlightNumber").textValue();
+    }
+
+    public long testH2() {
+        return roundTripDAO.count();
+    }
+
+    public List<RoundTrip> getLastDeals() {
+        //todo find last elements with the same last check
+        //todo find a better way to get last roundTrips fast - current solution is to fetch all elements with max last check
+        //todo possible solution: hold lastCheck as a field and update its value each time (another possible solution: caching)
+        return null;
     }
 }
