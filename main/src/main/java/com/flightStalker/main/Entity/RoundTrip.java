@@ -1,7 +1,6 @@
 package com.flightStalker.main.Entity;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 public class RoundTrip {
@@ -15,6 +14,8 @@ public class RoundTrip {
     private Flight inboundFlight;
     @OneToOne(cascade = {CascadeType.ALL})
     private Flight outboundFlight;
+    private String flightUrl;
+    private String site;
     private int price;
     private long lastCheck;
     private int availableSeats;
@@ -22,12 +23,14 @@ public class RoundTrip {
     public RoundTrip() {
     }
 
-    public RoundTrip(Flight inboundFlight, Flight outboundFlight, int price, String countryName, String destinationName, long lastCheck, int availableSeats) {
+    public RoundTrip(Flight inboundFlight, Flight outboundFlight, String flightUrl, int price, String countryName, String destinationName, long lastCheck, int availableSeats) {
 
         this.countryName = countryName;
         this.destinationName = destinationName;
         this.inboundFlight = inboundFlight;
         this.outboundFlight = outboundFlight;
+        this.flightUrl = flightUrl;
+        this.site = "Hulyo";
         this.price = price;
         this.lastCheck = lastCheck;
         this.availableSeats = availableSeats;
@@ -74,6 +77,24 @@ public class RoundTrip {
         return this;
     }
 
+    public String getFlightUrl() {
+        return flightUrl;
+    }
+
+    public RoundTrip setFlightUrl(String flightUrl) {
+        this.flightUrl = flightUrl;
+        return this;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public RoundTrip setSite(String site) {
+        this.site = site;
+        return this;
+    }
+
     public int getPrice() {
         return price;
     }
@@ -108,6 +129,7 @@ public class RoundTrip {
                 ", destinationName='" + destinationName + '\'' +
                 ", inboundFlight=" + inboundFlight +
                 ", outboundFlight=" + outboundFlight +
+                ", flightUrl=" + flightUrl +
                 ", price=" + price +
                 ", lastCheck=" + lastCheck +
                 ", availableSeats=" + availableSeats +
