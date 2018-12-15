@@ -17,7 +17,7 @@ public class HulyoController {
 
     @GetMapping("scrape")
     public void scrape(){
-        worker.parseWithSelenium();
+        worker.parseDocument();
     }
 
     @GetMapping("getLastCheck")
@@ -28,6 +28,11 @@ public class HulyoController {
     @GetMapping("getLastDeals")
     public List<RoundTrip> getLastDeals(){
         return worker.getLastDeals();
+    }
+
+    @GetMapping("getDemo")
+    public List<RoundTrip> getDemo(){
+        return worker.getDemo();
     }
 
     @GetMapping("test")
